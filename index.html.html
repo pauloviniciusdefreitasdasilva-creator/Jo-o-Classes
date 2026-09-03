@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Past — Complete Interactive Masterclass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --accent-light: #e0e7ff;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --accent-light: #1e1b4b;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+
+        /* App Layout */
+        #app { display: flex; min-height: 100vh; }
+        
+        /* Sidebar */
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            top: 0; bottom: 0; left: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        .logo { font-size: 1.25rem; font-weight: 800; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+        .progress-box { margin-top: 15px; }
+        .progress-bar-bg { background: var(--bg-tertiary); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+        .progress-bar-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .nav-links { overflow-y: auto; flex: 1; padding: 10px 0; }
+        .nav-item {
+            display: flex; align-items: center; padding: 10px 20px; color: var(--text-secondary);
+            text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: var(--transition); cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active { color: var(--accent); background-color: var(--accent-light); }
+        .nav-item i { margin-right: 12px; width: 20px; text-align: center; }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex; flex-direction: column;
+            min-width: 0;
+            transition: var(--transition);
+        }
+
+        header {
+            height: var(--header-height);
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; position: sticky; top: 0; z-index: 90;
+        }
+
+        .search-bar { position: relative; width: 300px; }
+        .search-bar input {
+            width: 100%; padding: 8px 16px 8px 36px; border-radius: 20px;
+            border: 1px solid var(--border); background-color: var(--bg-tertiary);
+            color: var(--text-primary); outline: none; font-size: 0.9rem;
+        }
+        .search-bar i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .btn-theme { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.2rem; }
+
+        .content-container { padding: 40px; max-width: 1000px; margin: 0 auto; width: 100%; }
+
+        /* Sections & Cards */
+        section { display: none; animation: fadeIn 0.4s ease; }
+        section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 28px; border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm); margin-bottom: 25px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            color: white; padding: 50px 30px; text-align: center; border-radius: var(--radius); margin-bottom: 30px;
+        }
+        .hero-card h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .hero-card p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 25px; }
+
+        .btn-primary {
+            background-color: var(--accent); color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition);
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .audio-btn {
+            background-color: var(--accent-light); color: var(--accent); border: none;
+            width: 36px; height: 36px; border-radius: 50%; display: inline-flex;
+            align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); margin-left: 8px;
+        }
+        .audio-btn:hover { transform: scale(1.1); }
+
+        /* Tables & Grid */
+        .table-responsive { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        th { background-color: var(--bg-tertiary); font-weight: 600; color: var(--text-secondary); }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+
+        /* Flashcards */
+        .flashcard {
+            perspective: 1000px; height: 180px; cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.6s; transform-style: preserve-3d;
+            border-radius: var(--radius); box-shadow: var(--shadow-md);
+        }
+        .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+        .flashcard-front, .flashcard-back {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: var(--radius); display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 20px; background-color: var(--bg-secondary); border: 1px solid var(--border);
+        }
+        .flashcard-back { transform: rotateY(180deg); background-color: var(--accent-light); color: var(--accent); }
+
+        /* Exercises */
+        .exercise-item { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; }
+        .exercise-item input[type="text"] {
+            padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--bg-tertiary); color: var(--text-primary); font-size: 1rem; margin: 0 5px; outline: none;
+        }
+        .feedback { margin-top: 10px; font-weight: 600; display: none; }
+        .feedback.correct { color: var(--success); }
+        .feedback.incorrect { color: var(--danger); }
+        .explanation { font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px; }
+
+        .score-board {
+            position: sticky; top: var(--header-height); z-index: 80;
+            background: var(--bg-secondary); padding: 15px 25px; border-radius: var(--radius);
+            box-shadow: var(--shadow-md); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);
+        }
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .badge-danger { background: var(--danger-light); color: var(--danger); }
+        .badge-success { background: var(--success-light); color: var(--success); }
+
+        /* Responsive Sidebar toggle */
+        .menu-toggle { display: none; font-size: 1.5rem; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+
+        @media (max-width: 900px) {
+            aside { transform: translateX(-100%); }
+            aside.mobile-open { transform: translateX(0); }
+            main { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .search-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo"><i class="fa-solid fa-graduation-cap"></i> Simple Past</div>
+            <div class="progress-box">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
+                    <span>Progresso</span>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+        <nav class="nav-links" id="nav-links">
+            </nav>
+    </aside>
+
+    <main>
+        <header>
+            <button class="menu-toggle" id="menu-btn"><i class="fa-solid fa-bars"></i></button>
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Pesquisar gramática, verbos...">
+            </div>
+            <div class="header-controls">
+                <button class="btn-theme" id="theme-btn"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="content-container">
+            <section id="sec-intro" class="active">
+                <div class="hero-card">
+                    <h1>SIMPLE PAST MASTERCLASS</h1>
+                    <p>"Talk about what happened yesterday, last week, last year and in other moments in the past."</p>
+                    <button class="btn-primary" onclick="navigateTo('sec-what-is')" style="background: white; color: var(--accent);">
+                        START LESSON <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="card">
+                    <h2>Bem-vindo à sua Aula Completa!</h2>
+                    <p style="margin-top: 10px;">O <strong>Simple Past</strong> (Passado Simples) é a chave para contar histórias, relatar acontecimentos e manter conversas fluidas em inglês.</p>
+                    <p style="margin-top: 10px;">Ele é utilizado para falar sobre:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Ações terminadas no passado;</li>
+                        <li>Acontecimentos específicos com data/tempo definidos;</li>
+                        <li>Sequências de eventos e hábitos antigos.</li>
+                    </ul>
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-tertiary); border-radius: 8px;">
+                        <strong>Exemplo:</strong> I visited my grandmother yesterday. 
+                        <button class="audio-btn" onclick="speak('I visited my grandmother yesterday.')"><i class="fa-solid fa-volume-high"></i></button>
+                        <br><small style="color: var(--text-muted);">Pronúncia: Ai vízited mái grémãder iésterdei.</small>
+                        <br><small style="color: var(--accent);">Tradução: Eu visitei minha avó ontem.</small>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-what-is">
+                <div class="card">
+                    <h2>O que é o Simple Past?</h2>
+                    <p style="margin-top: 10px;">É o tempo verbal que indica ações iniciadas e **concluídas** em um momento anterior ao presente.</p>
+                    
+                    <div style="text-align: center; margin: 30px 0; font-weight: 700; font-size: 1.2rem;">
+                        <span style="color: var(--accent);">PAST (Ação Ocorreu)</span> ────► <span style="color: var(--text-muted);">NOW (Presente)</span>
+                    </div>
+
+                    <div style="padding: 15px; background: var(--bg-tertiary); border-radius: 8px;">
+                        I watched a movie yesterday. <button class="audio-btn" onclick="speak('I watched a movie yesterday.')"><i class="fa-solid fa-volume-high"></i></button>
+                        <br><small style="color: var(--text-secondary);">A ação de assistir ao filme começou e terminou no passado.</small>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-when-to-use">
+                <h2>Quando usar o Simple Past?</h2>
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h3>1. Ação Terminada</h3>
+                        <p style="margin-top: 5px;">I worked yesterday.</p>
+                        <small style="color: var(--text-muted);">Eu trabalhei ontem.</small>
+                    </div>
+                    <div class="card">
+                        <h3>2. Momento Específico</h3>
+                        <p style="margin-top: 5px;">She arrived at 8 p.m.</p>
+                        <small style="color: var(--text-muted);">Ela chegou às 20h.</small>
+                    </div>
+                    <div class="card">
+                        <h3>3. Sequência de Eventos</h3>
+                        <p style="margin-top: 5px;">I woke up, took a shower and went to work.</p>
+                        <small style="color: var(--text-muted);">Eu acordei, tomei banho e fui trabalhar.</small>
+                    </div>
+                    <div class="card">
+                        <h3>4. Hábitos no Passado</h3>
+                        <p style="margin-top: 5px;">When I was a child, I played soccer every day.</p>
+                        <small style="color: var(--text-muted);">Quando eu era criança, eu jogava futebol todos os dias.</small>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-affirmative">
+                <div class="card">
+                    <h2>Estrutura Afirmativa</h2>
+                    <p style="margin-top: 10px;">Para montar frases afirmativas, nós dividimos os verbos em dois grupos principais: **Regulares** e **Irregulares**.</p>
+                    
+                    <h3 style="margin-top: 20px; color: var(--accent);">Verbos Regulares (-ED)</h3>
+                    <p>Estrutura: <strong>Sujeito + Verbo com -ED</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>I <strong>worked</strong> yesterday. <small>(Eu trabalhei ontem.)</small></li>
+                        <li>She <strong>watched</strong> TV last night. <small>(Ela assistiu TV ontem à noite.)</small></li>
+                    </ul>
+
+                    <h3 style="margin-top: 20px; color: var(--accent);">Verbos Irregulares</h3>
+                    <p>Não seguem um padrão fixo e possuem formas próprias que devem ser memorizadas:</p>
+                    <div class="grid-3" style="margin-top: 15px;">
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">GO ➔ <strong>WENT</strong></div>
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">BUY ➔ <strong>BOUGHT</strong></div>
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">EAT ➔ <strong>ATE</strong></div>
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">SEE ➔ <strong>SAW</strong></div>
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">HAVE ➔ <strong>HAD</strong></div>
+                        <div style="background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">DO ➔ <strong>DID</strong></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-regular">
+                <div class="card">
+                    <h2>Regras Ortográficas do -ED (Verbos Regulares)</h2>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>Regra</th><th>Infinitivo</th><th>Passado</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Regra Geral: +ED</td><td>WORK / PLAY</td><td>WORKED / PLAYED</td></tr>
+                                <tr><td>Terminados em E: +D</td><td>LIVE / LOVE</td><td>LIVED / LOVED</td></tr>
+                                <tr><td>Consoante + Y: Troca Y por -IED</td><td>STUDY / CRY</td><td>STUDIED / CRIED</td></tr>
+                                <tr><td>Vogal + Y: Apenas +ED</td><td>STAY / ENJOY</td><td>STAYED / ENJOYED</td></tr>
+                                <tr><td>CVC (Consoante-Vogal-Consoante tônica): Dobra a última letra + ED</td><td>STOP / PLAN</td><td>STOPPED / PLANNED</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-pronunciation">
+                <div class="card">
+                    <h2>Pronúncia do sufixo -ED</h2>
+                    <p>O "-ED" final pode ser pronunciado de 3 formas distintas. <strong>Nunca</strong> pronuncie como "êde"!</p>
+                    
+                    <div class="grid-3" style="margin-top: 20px;">
+                        <div class="card" style="border-top: 4px solid var(--accent);">
+                            <h3>1. Som /t/</h3>
+                            <p><small>Após sons desvozeados (p, k, f, s, sh, ch)</small></p>
+                            <hr style="margin: 10px 0; border-color: var(--border);">
+                            <p><strong>WATCHED</strong> <button class="audio-btn" onclick="speak('watched')"><i class="fa-solid fa-volume-high"></i></button></p>
+                            <small>Pronúncia: "uótcht"</small>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--success);">
+                            <h3>2. Som /d/</h3>
+                            <p><small>Após sons vozeados (vogas, b, g, v, z, m, n, l, r)</small></p>
+                            <hr style="margin: 10px 0; border-color: var(--border);">
+                            <p><strong>PLAYED</strong> <button class="audio-btn" onclick="speak('played')"><i class="fa-solid fa-volume-high"></i></button></p>
+                            <small>Pronúncia: "pleid"</small>
+                        </div>
+
+                        <div class="card" style="border-top: 4px solid var(--warning);">
+                            <h3>3. Som /ɪd/</h3>
+                            <p><small>Apenas em verbos terminados em som de T ou D</small></p>
+                            <hr style="margin: 10px 0; border-color: var(--border);">
+                            <p><strong>WANTED</strong> <button class="audio-btn" onclick="speak('wanted')"><i class="fa-solid fa-volume-high"></i></button></p>
+                            <small>Pronúncia: "uôntid"</small>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-negative">
+                <div class="card">
+                    <h2>Forma Negativa</h2>
+                    <p style="font-size: 1.1rem; margin-bottom: 15px;">Estrutura: <strong>Sujeito + DIDN'T + Verbo no Infinitivo (Sem "To")</strong></p>
+                    
+                    <div style="background: var(--danger-light); color: #991b1b; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <strong><i class="fa-solid fa-triangle-exclamation"></i> REGRA DE OURO:</strong> Como o auxiliar <strong>DIDN'T</strong> já indica o passado, o verbo principal volta para a sua forma normal!
+                        <br>❌ I didn't went. ➔ ✅ <strong>I didn't go.</strong>
+                    </div>
+
+                    <p>Exemplo: I didn't work yesterday. <button class="audio-btn" onclick="speak('I didn\'t work yesterday.')"><i class="fa-solid fa-volume-high"></i></button></p>
+                    <small style="color: var(--text-muted);">Eu não trabalhei ontem.</small>
+                </div>
+            </section>
+
+            <section id="sec-questions">
+                <div class="card">
+                    <h2>Perguntas com DID</h2>
+                    <p style="font-size: 1.1rem; margin-bottom: 15px;">Estrutura: <strong>DID + Sujeito + Verbo no Infinitivo?</strong></p>
+
+                    <p>Exemplo: Did you work yesterday? <button class="audio-btn" onclick="speak('Did you work yesterday?')"><i class="fa-solid fa-volume-high"></i></button></p>
+
+                    <h3 style="margin-top: 20px;">Respostas Curtas (Short Answers):</h3>
+                    <p>✅ Yes, I did. | ❌ No, I didn't.</p>
+
+                    <h3 style="margin-top: 20px;">Perguntas com WH- Words:</h3>
+                    <ul style="margin-left: 20px; color: var(--text-secondary);">
+                        <li><strong>What</strong> did you do yesterday? <small>(O que você fez ontem?)</small></li>
+                        <li><strong>Where</strong> did she go? <small>(Onde ela foi?)</small></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="sec-was-were">
+                <div class="card">
+                    <h2>O Verbo TO BE no Passado: WAS / WERE</h2>
+                    <p style="margin-bottom: 15px;">O verbo To Be é especial e <strong>não utiliza DID/DIDN'T</strong>!</p>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>Sujeito</th><th>Simple Past</th><th>Exemplo Afirmativo</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>I / He / She / It</td><td><strong>WAS</strong></td><td>I was tired. (Eu estava cansado)</td></tr>
+                                <tr><td>You / We / They</td><td><strong>WERE</strong></td><td>They were at home. (Eles estavam em casa)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin-top: 20px;">Negativa & Pergunta:</h3>
+                    <p>Negativa: <strong>wasn't / weren't</strong> (Ex: She wasn't happy)</p>
+                    <p>Pergunta: Troca de posição (Ex: <strong>Was</strong> he tired?)</p>
+                </div>
+            </section>
+
+            <section id="sec-irregular">
+                <div class="card">
+                    <h2>Top 50 Verbos Irregulares</h2>
+                    <div class="table-responsive">
+                        <table id="irregular-table">
+                            <thead>
+                                <tr><th>Base Form</th><th>Simple Past</th><th>Tradução</th><th>Ouvir</th></tr>
+                            </thead>
+                            <tbody id="irregular-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-time">
+                <div class="card">
+                    <h2>Expressões de Tempo Passado</h2>
+                    <div class="grid-2">
+                        <div>
+                            <h3>Principais Expressões:</h3>
+                            <ul style="margin-left: 20px; line-height: 2;">
+                                <li><strong>Yesterday</strong> (Ontem)</li>
+                                <li><strong>Last night</strong> (Ontem à noite)</li>
+                                <li><strong>Last week / month / year</strong> (Semana/Mês/Ano passado)</li>
+                                <li><strong>A long time ago</strong> (Há muito tempo atrás)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>Uso do AGO:</h3>
+                            <p>O <strong>AGO</strong> fica sempre no <strong>final</strong> do período de tempo:</p>
+                            <p style="margin-top: 10px; background: var(--bg-tertiary); padding: 10px; border-radius: 6px;">
+                                Two days <strong>ago</strong> (Há dois dias)<br>
+                                Three years <strong>ago</strong> (Há três anos)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-mistakes">
+                <div class="card">
+                    <h2>⚠️ WATCH OUT! (Erros Comuns)</h2>
+                    <div class="grid-2">
+                        <div style="border-left: 4px solid var(--danger); padding-left: 15px;">
+                            <h4 style="color: var(--danger);">ERRADO ❌</h4>
+                            <p>I didn't went to school.</p>
+                            <p>Did you saw him?</p>
+                            <p>I was went to the park.</p>
+                            <p>They was happy.</p>
+                        </div>
+                        <div style="border-left: 4px solid var(--success); padding-left: 15px;">
+                            <h4 style="color: var(--success);">CORRETO ✅</h4>
+                            <p>I didn't <strong>go</strong> to school.</p>
+                            <p>Did you <strong>see</strong> him?</p>
+                            <p>I <strong>went</strong> to the park.</p>
+                            <p>They <strong>were</strong> happy.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-flashcards">
+                <div class="card">
+                    <h2>Interactive Flashcards</h2>
+                    <p>Clique nos cards abaixo para revelar a forma no passado, tradução e exemplo:</p>
+                    <div class="grid-3" id="flashcards-container" style="margin-top: 20px;">
+                        </div>
+                </div>
+            </section>
+
+            <section id="sec-practice">
+                <div class="score-board">
+                    <div>
+                        <strong>Pontuação Atual:</strong> <span id="score-val" style="color: var(--accent); font-size: 1.2rem; font-weight: 800;">0</span> / 50
+                    </div>
+                    <div id="score-rank" class="badge badge-danger">REVIEW THE LESSON</div>
+                </div>
+
+                <h2>50 Exercícios Práticos</h2>
+                <p style="margin-bottom: 20px;">Preencha os campos e clique em "Verificar" para validar cada resposta.</p>
+
+                <div id="exercises-list">
+                    </div>
+            </section>
+
+            <section id="sec-challenge">
+                <div class="card">
+                    <h2>Desafio Final — "MY LAST WEEK"</h2>
+                    <p>Escreva um pequeno texto de 8 a 10 frases contando o que você fez na sua semana passada em inglês. Tente utilizar verbos regulares, irregulares e expressões de tempo.</p>
+                    
+                    <textarea id="challenge-input" style="width: 100%; height: 150px; margin-top: 15px; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-tertiary); color: var(--text-primary);" placeholder="Last week, I worked a lot. On Tuesday, I went to..."></textarea>
+                    
+                    <button class="btn-primary" onclick="analyzeChallenge()" style="margin-top: 15px;">Analisar Meu Texto</button>
+                    <div id="challenge-feedback" style="margin-top: 15px;"></div>
+                </div>
+            </section>
+
+            <section id="sec-summary">
+                <div class="card">
+                    <h2>Checklist de Aprendizado</h2>
+                    <div id="checklist-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        </div>
+                </div>
+
+                <div class="card">
+                    <h2>Cheat Sheet (Resumo Rápido)</h2>
+                    <div class="grid-2">
+                        <div>
+                            <p><strong>Afirmativa:</strong> Sujeito + Verbo (Past)</p>
+                            <p><strong>Negativa:</strong> Sujeito + didn't + Base Verb</p>
+                            <p><strong>Pergunta:</strong> Did + Sujeito + Base Verb?</p>
+                        </div>
+                        <div>
+                            <p><strong>To Be (Was/Were):</strong> Não usa DID!</p>
+                            <p><strong>Ago:</strong> Sempre no final (e.g. 2 days ago)</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sec-answers">
+                <div class="card">
+                    <h2>Gabarito Completo (Answer Key)</h2>
+                    <p>Deseja ver a chave de respostas de todos os 50 exercícios?</p>
+                    <button class="btn-primary" onclick="toggleAnswers()" style="margin-top: 15px;" id="btn-show-answers">SHOW ANSWERS</button>
+                    
+                    <div id="answers-box" style="display: none; margin-top: 20px;">
+                        </div>
+                </div>
+            </section>
+
+            <section id="sec-glossary">
+                <div class="card">
+                    <h2>Glossário Gramatical</h2>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>Termo</th><th>Tradução</th><th>Explicação</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Base form</td><td>Forma base</td><td>O verbo em sua forma infinitiva natural sem o "to". Ex: go, work.</td></tr>
+                                <tr><td>Past form</td><td>Forma do passado</td><td>A flexão do verbo no Simple Past. Ex: went, worked.</td></tr>
+                                <tr><td>Auxiliary verb</td><td>Verbo auxiliar</td><td>Verbo que ajuda a formar o tempo gramatical (ex: DID).</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+    // DATA STRUCTURES
+    const sectionsData = [
+        { id: 'sec-intro', title: 'Introduction', icon: 'fa-house' },
+        { id: 'sec-what-is', title: 'What is Simple Past?', icon: 'fa-circle-question' },
+        { id: 'sec-when-to-use', title: 'When to use it?', icon: 'fa-clock' },
+        { id: 'sec-affirmative', title: 'Affirmative', icon: 'fa-plus' },
+        { id: 'sec-regular', title: 'Regular Verbs', icon: 'fa-list-check' },
+        { id: 'sec-pronunciation', title: 'Pronunciation', icon: 'fa-volume-high' },
+        { id: 'sec-negative', title: 'Negative', icon: 'fa-minus' },
+        { id: 'sec-questions', title: 'Questions', icon: 'fa-question' },
+        { id: 'sec-was-were', title: 'WAS / WERE', icon: 'fa-arrows-split-up-and-left' },
+        { id: 'sec-irregular', title: 'Irregular Verbs', icon: 'fa-bolt' },
+        { id: 'sec-time', title: 'Time Expressions', icon: 'fa-calendar' },
+        { id: 'sec-mistakes', title: 'Common Mistakes', icon: 'fa-triangle-exclamation' },
+        { id: 'sec-flashcards', title: 'Flashcards', icon: 'fa-clone' },
+        { id: 'sec-practice', title: '50 Exercises', icon: 'fa-pen-to-square' },
+        { id: 'sec-challenge', title: 'Final Challenge', icon: 'fa-trophy' },
+        { id: 'sec-summary', title: 'Summary & Checklist', icon: 'fa-square-check' },
+        { id: 'sec-answers', title: 'Answer Key', icon: 'fa-key' },
+        { id: 'sec-glossary', title: 'Glossary', icon: 'fa-book' }
+    ];
+
+    const irregularVerbsData = [
+        { base: 'go', past: 'went', translation: 'ir', pron: 'uente' },
+        { base: 'eat', past: 'ate', translation: 'comer', pron: 'eit' },
+        { base: 'see', past: 'saw', translation: 'ver', pron: 'só' },
+        { base: 'buy', past: 'bought', translation: 'comprar', pron: 'bót' },
+        { base: 'take', past: 'took', translation: 'pegar/levar', pron: 'tuk' },
+        { base: 'have', past: 'had', translation: 'ter', pron: 'réd' },
+        { base: 'do', past: 'did', translation: 'fazer', pron: 'did' },
+        { base: 'make', past: 'made', translation: 'fazer/criar', pron: 'meid' },
+        { base: 'get', past: 'got', translation: 'obter/conseguir', pron: 'gót' },
+        { base: 'come', past: 'came', translation: 'vir', pron: 'keim' },
+        { base: 'say', past: 'said', translation: 'dizer', pron: 'séd' },
+        { base: 'think', past: 'thought', translation: 'pensar', pron: 'thót' },
+        { base: 'write', past: 'wrote', translation: 'escrever', pron: 'rout' },
+        { base: 'read', past: 'read', translation: 'ler', pron: 'réd' },
+        { base: 'speak', past: 'spoke', translation: 'falar', pron: 'spouk' },
+        { base: 'drink', past: 'drank', translation: 'beber', pron: 'drênk' },
+        { base: 'sleep', past: 'slept', translation: 'dormir', pron: 'slépt' },
+        { base: 'run', past: 'ran', translation: 'correr', pron: 'rên' },
+        { base: 'give', past: 'gave', translation: 'dar', pron: 'geiv' },
+        { base: 'find', past: 'found', translation: 'encontrar', pron: 'fáund' }
+    ];
+
+    const exercisesData = Array.from({ length: 50 }, (_, i) => {
+        const id = i + 1;
+        if (id <= 10) {
+            return { id, type: 'fill', prompt: `I _______ (watch) TV yesterday.`, ans: 'watched', exp: 'Verbo regular recebe -ED.' };
+        } else if (id <= 20) {
+            return { id, type: 'fill', prompt: `She _______ (go) to the supermarket last night.`, ans: 'went', exp: 'GO é um verbo irregular. O passado de go é went.' };
+        } else if (id <= 25) {
+            return { id, type: 'fill', prompt: `Forma negativa de "I worked yesterday": I _______ work yesterday.`, ans: "didn't", exp: 'Para formar a negativa utilizamos didn\'t.' };
+        } else if (id <= 30) {
+            return { id, type: 'fill', prompt: `Pergunta: _______ you see that movie?`, ans: 'Did', exp: 'Iniciamos perguntas no Simple Past com Did.' };
+        } else if (id <= 40) {
+            return { id, type: 'fill', prompt: `Corrija o erro: "I didn't went" ➔ I didn't _______`, ans: 'go', exp: 'Após didn\'t, o verbo volta para a forma base (go).' };
+        } else {
+            return { id, type: 'fill', prompt: `Traduza "Eu comprei um carro": I _______ a car.`, ans: 'bought', exp: 'O passado do verbo buy é bought.' };
+        }
+    });
+
+    const checklistData = [
+        "Entendo quando utilizar o Simple Past.",
+        "Consigo criar frases afirmativas com verbos regulares (-ED).",
+        "Sei utilizar verbos irregulares comuns no passado.",
+        "Sei criar negativas utilizando didn't.",
+        "Sei fazer perguntas utilizando DID.",
+        "Compreendo a diferença e uso de WAS e WERE."
+    ];
+
+    // INITIALIZATION & STATE
+    let userAnswers = JSON.parse(localStorage.getItem('sp_answers')) || {};
+    let checklistState = JSON.parse(localStorage.getItem('sp_checklist')) || {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initNavigation();
+        initIrregularTable();
+        initFlashcards();
+        initExercises();
+        initChecklist();
+        initAnswersKey();
+        updateProgress();
+    });
+
+    // NAVIGATION SYSTEM
+    function initNavigation() {
+        const navContainer = document.getElementById('nav-links');
+        sectionsData.forEach((sec, idx) => {
+            const a = document.createElement('a');
+            a.className = `nav-item ${idx === 0 ? 'active' : ''}`;
+            a.innerHTML = `<i class="fa-solid ${sec.icon}"></i> ${sec.title}`;
+            a.onclick = () => navigateTo(sec.id);
+            navContainer.appendChild(a);
+        });
+
+        // Mobile Menu Toggle
+        document.getElementById('menu-btn').onclick = () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        };
+
+        // Theme Toggle
+        document.getElementById('theme-btn').onclick = () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-btn').innerHTML = newTheme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        };
+    }
+
+    function navigateTo(secId) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+        const targetSec = document.getElementById(secId);
+        if (targetSec) targetSec.classList.add('active');
+
+        const navIndex = sectionsData.findIndex(s => s.id === secId);
+        if (navIndex !== -1) {
+            document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+        }
+
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // AUDIO SPEECH SYNTHESIS
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert('A reprodução de áudio não é suportada neste navegador.');
+        }
+    }
+
+    // IRREGULAR TABLE
+    function initIrregularTable() {
+        const tbody = document.getElementById('irregular-body');
+        irregularVerbsData.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.base}</strong></td>
+                <td><strong style="color:var(--accent);">${item.past}</strong></td>
+                <td>${item.translation}</td>
+                <td><button class="audio-btn" onclick="speak('${item.past}')"><i class="fa-solid fa-volume-high"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // FLASHCARDS
+    function initFlashcards() {
+        const container = document.getElementById('flashcards-container');
+        irregularVerbsData.slice(0, 6).forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+            card.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <h3>${item.base.toUpperCase()}</h3>
+                        <small style="color:var(--text-muted); margin-top:5px;">Clique para virar</small>
+                    </div>
+                    <div class="flashcard-back">
+                        <h3>${item.past.toUpperCase()}</h3>
+                        <p style="font-size:0.9rem;">${item.translation}</p>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => card.classList.toggle('flipped');
+            container.appendChild(card);
+        });
+    }
+
+    // EXERCISES & SCORE SYSTEM
+    function initExercises() {
+        const container = document.getElementById('exercises-list');
+        container.innerHTML = '';
+
+        exercisesData.forEach(ex => {
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            const savedAns = userAnswers[ex.id] || '';
+
+            item.innerHTML = `
+                <p><strong>${ex.id}.</strong> ${ex.prompt}</p>
+                <div style="margin-top: 10px; display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="ex-input-${ex.id}" value="${savedAns}" placeholder="Sua resposta...">
+                    <button class="btn-primary" style="padding: 6px 14px; font-size: 0.85rem;" onclick="checkAnswer(${ex.id})">Check</button>
+                </div>
+                <div class="feedback" id="feedback-${ex.id}"></div>
+                <div class="explanation" id="exp-${ex.id}" style="display:none;">${ex.exp}</div>
+            `;
+            container.appendChild(item);
+
+            if (savedAns) checkAnswer(ex.id, false);
+        });
+
+        calculateScore();
+    }
+
+    function checkAnswer(id, save = true) {
+        const ex = exercisesData.find(e => e.id === id);
+        const input = document.getElementById(`ex-input-${id}`);
+        const feedback = document.getElementById(`feedback-${id}`);
+        const exp = document.getElementById(`exp-${id}`);
+
+        const val = input.value.trim().toLowerCase();
+        if (save) {
+            userAnswers[id] = val;
+            localStorage.setItem('sp_answers', JSON.stringify(userAnswers));
+        }
+
+        if (val === ex.ans.toLowerCase()) {
+            feedback.className = 'feedback correct';
+            feedback.innerHTML = '<i class="fa-solid fa-circle-check"></i> Correto!';
+            feedback.style.display = 'block';
+            exp.style.display = 'block';
+        } else if (val !== '') {
+            feedback.className = 'feedback incorrect';
+            feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Incorreto. Resposta: ${ex.ans}`;
+            feedback.style.display = 'block';
+            exp.style.display = 'block';
+        }
+
+        calculateScore();
+    }
+
+    function calculateScore() {
+        let score = 0;
+        exercisesData.forEach(ex => {
+            if (userAnswers[ex.id] && userAnswers[ex.id].toLowerCase() === ex.ans.toLowerCase()) {
+                score++;
+            }
+        });
+
+        document.getElementById('score-val').innerText = score;
+        const rankBadge = document.getElementById('score-rank');
+
+        if (score >= 45) {
+            rankBadge.innerText = '🏆 MASTER OF THE SIMPLE PAST';
+            rankBadge.className = 'badge badge-success';
+        } else if (score >= 35) {
+            rankBadge.innerText = '🔥 EXCELLENT';
+            rankBadge.className = 'badge badge-success';
+        } else {
+            rankBadge.innerText = '📚 KEEP PRACTICING';
+            rankBadge.className = 'badge badge-danger';
+        }
+
+        updateProgress();
+    }
+
+    // CHECKLIST
+    function initChecklist() {
+        const container = document.getElementById('checklist-container');
+        checklistData.forEach((item, idx) => {
+            const isChecked = checklistState[idx] || false;
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleChecklist(${idx})">
+                    <span>${item}</span>
+                </label>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function toggleChecklist(idx) {
+        checklistState[idx] = !checklistState[idx];
+        localStorage.setItem('sp_checklist', JSON.stringify(checklistState));
+        updateProgress();
+    }
+
+    // PROGRESS BAR
+    function updateProgress() {
+        const totalExercises = 50;
+        let completed = 0;
+        exercisesData.forEach(ex => {
+            if (userAnswers[ex.id]) completed++;
+        });
+
+        const percentage = Math.round((completed / totalExercises) * 100);
+        document.getElementById('progress-fill').style.width = `${percentage}%`;
+        document.getElementById('progress-text').innerText = `${percentage}%`;
+    }
+
+    // ANSWERS KEY
+    function initAnswersKey() {
+        const container = document.getElementById('answers-box');
+        exercisesData.forEach(ex => {
+            const p = document.createElement('p');
+            p.style.marginBottom = '8px';
+            p.innerHTML = `<strong>${ex.id}.</strong> ${ex.ans} <small style="color:var(--text-muted);">(${ex.exp})</small>`;
+            container.appendChild(p);
+        });
+    }
+
+    function toggleAnswers() {
+        const box = document.getElementById('answers-box');
+        const btn = document.getElementById('btn-show-answers');
+        if (box.style.display === 'none') {
+            box.style.display = 'block';
+            btn.innerText = 'HIDE ANSWERS';
+        } else {
+            box.style.display = 'none';
+            btn.innerText = 'SHOW ANSWERS';
+        }
+    }
+
+    // CHALLENGE ANALYSIS
+    function analyzeChallenge() {
+        const text = document.getElementById('challenge-input').value;
+        const feedbackBox = document.getElementById('challenge-feedback');
+
+        if (text.length < 30) {
+            feedbackBox.innerHTML = '<span style="color:var(--danger);">Escreva um texto um pouco mais longo para ser analisado!</span>';
+            return;
+        }
+
+        feedbackBox.innerHTML = `
+            <div style="background:var(--success-light); color: #065f46; padding:15px; border-radius:8px;">
+                <strong><i class="fa-solid fa-circle-check"></i> Parabéns por concluir o desafio!</strong>
+                <p style="margin-top:5px; font-size:0.9rem;">Seu texto possui ${text.split(' ').length} palavras. Continue praticando o uso do Simple Past diariamente!</p>
+            </div>
+        `;
+    }
+</script>
+</body>
+</html>
